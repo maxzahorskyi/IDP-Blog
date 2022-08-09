@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  CREATOR
+  ADMIN
+}
+
+model User {
+  id        String      @id @unique @default(uuid())
+  name      String
+  surname   String
+  username  String      @unique
+  email     String      @unique
+  password  String
+  role      Role        @default(USER)
+  post      Post[]
+  banned    BannedUser?
+  Request   Request[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model BannedUser {
+  id        String   @id @unique @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id          String        @id @unique @default(uuid())
+  title       String        @unique
+  description String?
+  body        String
+  image       String
+  isPublished Boolean       @default(false)
+  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  category    Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  String
+  tags        TagsOnPosts[]
+  viewsCount  Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Category {
+  id    String @id @unique @default(uuid())
+  title String
+  color String
+  post  Post[]
+}
+
+model Tag {
+  id   String        @id @unique @default(uuid())
+  name String
+  post TagsOnPosts[]
+}
+
+model TagsOnPosts {
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId      String
+  assignedAt DateTime @default(now())
+
+  @@id([postId, tagId])
+}
+
+enum RequestTypes {
+  UPDATE_TO_CREATOR
+  UPDATE_TO_ADMIN
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Request {
+  id        String        @id @unique @default(uuid())
+  type      RequestTypes
+  status    RequestStatus @default(PENDING)
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}

@@ -2,9 +2,9 @@
 The Blog project (Nest+PostgreSQL+Prisma+React+Webpack+Docker)
 
 ## Backend
-Database: PostgreSQL
-ORM: Prisma
-Framework: Nestjs
+Database: PostgreSQL;
+ORM: Prisma;
+Framework: Nestjs;
 
 ## Frontend
 Framework: React

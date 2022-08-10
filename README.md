@@ -1,13 +1,13 @@
 # IDP-Blog
 The Blog project (Nest+PostgreSQL+Prisma+React+Webpack+Docker)
 
-##Backend
+## Backend
 Database: PostgreSQL
 ORM: Prisma
 Framework: Nestjs
 
-##Frontend
+## Frontend
 Framework: React
 
-##Built with
+## Built with
 Docker and Webpack
